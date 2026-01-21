@@ -77,7 +77,7 @@ keys = [
     Key([mod], "space", lazy.spawn("rofi -show drun -modi drun,run,window,filebrowser -theme ~/.config/rofi/themes/config.rasi"), desc="Lancer Rofi"),
     Key([mod], "b", lazy.spawn(browser), desc="Lancer Brave"),
     Key([mod], "d", lazy.spawn("discord"), desc="Lancer Discord"),
-    Key([mod], "g", lazy.spawn(editor), desc="Lancer Geany"),
+    Key([mod], "g", lazy.group["scratchpad"].dropdown_toggle("geany"), desc="Afficher/masquer Geany"),
     Key([mod], "t", lazy.spawn(file_manager), desc="Lancer Thunar"),
     Key([mod], "o", lazy.spawn("obsidian"), desc="Lancer Obsidian"),
     Key([mod], "v", lazy.spawn("code"), desc="Lancer VS Code"),
@@ -120,6 +120,8 @@ groups = [Group(name=ws["icon"], label=ws["icon"]) for ws in workspace_definitio
 groups.append(ScratchPad("scratchpad", [
     DropDown("keepass", "flatpak run --command=bottles-cli com.usebottles.bottles run -b KeePass2 -p KeePass",
              width=0.6, height=0.7, x=0.3, y=0.15, opacity=0.95, on_focus_lost_hide=False),
+    DropDown("geany", "geany",
+             width=0.8, height=0.8, x=0.1, y=0.1, opacity=0.95, on_focus_lost_hide=False),
 ]))
 
 azerty_keys = ["ampersand", "eacute", "quotedbl", "apostrophe", "parenleft", "minus", "egrave", "underscore"]
@@ -269,6 +271,7 @@ def show_workspace_notification():
 @hook.subscribe.startup_once
 def autostart():
     """Lancement des applications au démarrage de Qtile."""
+    subprocess.call(['/usr/bin/xrandr', '--output', 'HDMI-1-0', '--auto', '--right-of', 'eDP'])
     if use_polybar:
         subprocess.Popen([f"{home}/.config/polybar/launch.sh"])
     subprocess.Popen(['picom'])
@@ -285,7 +288,7 @@ app_rules_definitions = {
     "web": (re.compile(r"^(Brave-browser)$"), workspace_definitions[0]["icon"]),
     "dev": (re.compile(r"^(Code)$"), workspace_definitions[1]["icon"]),
     "dir": (re.compile(r"^(Thunar)$"), workspace_definitions[3]["icon"]),
-    "txt": (re.compile(r"^(Geany|obsidian)$"), workspace_definitions[4]["icon"]),
+    "txt": (re.compile(r"^(obsidian)$"), workspace_definitions[4]["icon"]),
     "mus": (re.compile(r"^(Spotube)$"), workspace_definitions[5]["icon"]),
     "dis": (re.compile(r"^(discord)$"), workspace_definitions[6]["icon"]),
     "gen": (re.compile(r"^(steamwebhelper|Lutris|heroic)$"), workspace_definitions[7]["icon"]),

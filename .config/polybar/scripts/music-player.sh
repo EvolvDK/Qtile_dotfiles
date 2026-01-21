@@ -1,70 +1,82 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# Function to get the current player status and title
-get_player_info() {
-    local player=$1
-    local status=$(playerctl -p "$player" status 2> /dev/null)
-    local title=$(playerctl -p "$player" metadata title 2> /dev/null)
-    echo "$status|$title"
-}
+RMPC="$HOME/.cargo/bin/rmpc"
+STATE_FILE="$HOME/.config/polybar/music-focus-state"
 
-# Function to trim the title length
 trim_title() {
-    local title=$1
-    local max_length=30
-    if [ ${#title} -gt $max_length ]; then
-        title="${title:0:$((max_length - 2))}.."
-    fi
-    echo "$title"
+    local text="$1"
+    local max=30
+    (( ${#text} > max )) && text="${text:0:max-2}.."
+    echo "$text"
 }
 
-# Previous output to detect changes
-prev_output=""
+extract_field() {
+    printf '%s' "$1" | sed -n "s/.*\"$2\"[[:space:]]*:[[:space:]]*\"\\([^\"]*\\)\".*/\\1/p"
+}
+
+prev=""
 
 while true; do
-    # Get all available players
-    players=$(playerctl -l 2> /dev/null)
+    # Re-read focus mode every iteration (this was the bug — it was read only once before)
+    focus_mode=$(cat "$STATE_FILE" 2>/dev/null || echo "mpd")
 
-    active_player=""
-    output=" 󰝚 "  # Default output if no players are active
+    rmpc_song_output=$($RMPC song 2>/dev/null)
 
-    if [[ -n "$players" ]]; then
-        for player in $players; do
-            player_info=$(get_player_info "$player")
-            status=$(echo "$player_info" | cut -d'|' -f1)
-            title=$(echo "$player_info" | cut -d'|' -f2)
+    mpd_title=$(extract_field "$rmpc_song_output" "title")
+    mpd_artist=$(extract_field "$rmpc_song_output" "artist")
+    mpd_file=$(extract_field "$rmpc_song_output" "file")
 
-            if [[ "$status" == "Playing" ]]; then
-                active_player="$player"
-                output=$(trim_title "$title")
-                break
-            elif [[ "$status" == "Paused" && -z "$active_player" ]]; then
-                active_player="$player"
-                output=$(trim_title "$title")
-            fi
-        done
-
-        if [[ -n "$active_player" ]]; then
-            # Add the Spotify icon if Spotify is playing or paused
-            if [[ "$active_player" == "spotify" ]]; then
-                output="󰓇 $output"
+    # Decide what to display
+    if [[ -n "$mpd_file" && "$focus_mode" != "playerctl" ]]; then
+        # MPD priority (default focus)
+        if [[ -n "$mpd_title" ]]; then
+            display_text="${mpd_artist:+$mpd_artist - }$mpd_title"
+        else
+            # Fallback for no metadata
+            if [[ "$mpd_file" == *"#id="* ]]; then
+                fallback="${mpd_file##*#id=}"
             else
-                output="󰝚 $output"
+                fallback="${mpd_file##*/}"
+                fallback="${fallback%%\?*}"
+            fi
+            display_text="$fallback"
+        fi
+        output="󰝚 $(trim_title "$display_text")"
+    else
+        # Forced playerctl focus OR no MPD song
+        players=$(playerctl -l 2>/dev/null)
+        title=""
+        player_name=""
+
+        if [[ -n "$players" ]]; then
+            for player in $players; do
+                status=$(playerctl -p "$player" status 2>/dev/null)
+                t=$(playerctl -p "$player" metadata title 2>/dev/null)
+
+                if [[ "$status" == "Playing" ]]; then
+                    title="$t"
+                    player_name="$player"
+                    break
+                elif [[ "$status" == "Paused" && -z "$title" ]]; then
+                    title="$t"
+                    player_name="$player"
+                fi
+            done
+        fi
+
+        if [[ -n "$title" ]]; then
+            trimmed=$(trim_title "$title")
+            if [[ "$player_name" == *"spotify"* ]]; then
+                output="󰓇 $trimmed"
+            else
+                output="󰝚 $trimmed"
             fi
         else
-            output=" 󰎇 music 󰎇 "
+            output=" 󰝚 "
         fi
-    else
-        output=" 󰝚  "
     fi
 
-    # Print the formatted output only if it has changed
-    if [[ "$output" != "$prev_output" ]]; then
-        echo "$output"
-        prev_output="$output"
-    fi
+    [[ "$output" != "$prev" ]] && echo "$output" && prev="$output"
 
-    # Sleep for a short interval before checking again
     sleep 1
 done
- 
