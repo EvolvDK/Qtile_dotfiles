@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Extract keybindings from config.py with descriptions
+# This looks for Key() definitions with desc= parameters
+
+keybindings=$(grep -E 'Key\(' ~/.config/qtile/config.py | grep 'desc=' | sed 's/.*Key(//' | while IFS= read -r line; do
+    # Extract modifiers
+    if [[ $line =~ \[([^\]]+)\] ]]; then
+        mods="${BASH_REMATCH[1]}"
+        # Clean up modifiers
+        mods=${mods//\"/}
+        mods=${mods//mod4/Super}
+        mods=${mods//mod1/Alt}
+        mods=${mods//shift/Shift}
+        mods=${mods//control/Ctrl}
+        mods=${mods//, /+}
+    else
+        mods=""
+    fi
+    
+    # Extract key
+    if [[ $line =~ \],\ *\"([^\"]+)\" ]]; then
+        key="${BASH_REMATCH[1]}"
+    else
+        key=""
+    fi
+    
+    # Extract description
+    if [[ $line =~ desc=\"([^\"]+)\" ]]; then
+        desc="${BASH_REMATCH[1]}"
+    else
+        desc=""
+    fi
+    
+    # Format output
+    if [[ -n "$mods" && -n "$key" && -n "$desc" ]]; then
+        printf "%-30s %s\n" "$mods+$key" "$desc"
+    elif [[ -n "$key" && -n "$desc" ]]; then
+        printf "%-30s %s\n" "$key" "$desc"
+    fi
+done | sort -k2)
+
+# Show in rofi
+echo "$keybindings" | rofi -dmenu -i -p "Keybindings" \
+    -line-padding 4 -hide-scrollbar \
+    -theme ~/.config/rofi/themes/keybinds.rasi

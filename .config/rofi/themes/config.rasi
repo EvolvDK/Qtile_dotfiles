@@ -1,154 +1,150 @@
-  * {
-        bg: #00141d;
-        background-color: @bg;
-    }
+* {
+    bg: #00141d;
+    background-color: @bg;
+}
 
-    configuration {
-	    show-icons: true;
-	    icon-theme: "Papirus";
-	    location: 0;
-	    font: "JetBrainsMono Nerd Font 12";	
-	    display-drun: "";
-	    display-run: " ";
-	    display-filebrowser: " ";
-	    display-window: " ";
-    }
+configuration {
+    show-icons: true;
+    icon-theme: "Papirus";
+    location: 0;
+    font: "JetBrainsMono Nerd Font 12";	
+    display-drun: "";
+    display-run: " ";
+    display-filebrowser: " ";
+    display-window: " ";
+}
 
-    window { 
-	    width: 35%;
-	    transparency: "real";
-	    orientation: vertical;
-	    border-color: #4fc3f7;
-        border-radius: 10px;
-    }
+window { 
+    width: 35%;
+    transparency: "real";
+    orientation: vertical;
+    border-color: #4fc3f7;
+    border-radius: 10px;
+}
 
-    mainbox {
-	    children: [inputbar, listview];
-    }
+mainbox {
+    children: [inputbar, listview];
+}
 
 
-    // ELEMENT
-    // -----------------------------------
+// ELEMENT
+// -----------------------------------
 
-    element {
-	    padding: 4 12;
-	    text-color: #00141d;
-        border-radius: 5px;
-    }
+element {
+    padding: 4 12;
+    text-color: #00141d;
+    border-radius: 5px;
+}
 
-    element selected {
-	    text-color: #ffffff;
-	    background-color: #ffb454;
-    }
+element selected {
+    text-color: #ffffff;
+    background-color: #ffb454;
+}
 
-    element-text {
-	    background-color: inherit;
-	    text-color: inherit;
-    }
+element-text {
+    background-color: inherit;
+    text-color: inherit;
+}
 
-    element-icon {
-	    size: 16 px;
-	    background-color: inherit;
-	    padding: 0 6 0 0;
-	    alignment: vertical;
-    }
+element-icon {
+    size: 16px;
+    background-color: inherit;
+    padding: 0 6 0 0;
+    alignment: vertical;
+}
 
-	element.selected.active {
-		background-color: #00141d;
-		text-color: #bfbdb6;
-	}
- 
-	element.alternate.normal {
-		background-color: #00141d;
-		text-color: #bfbdb6;
-	}
+element.selected.active {
+    background-color: #00141d;
+    text-color: #bfbdb6;
+}
 
- 
-	element.alternate.active {
-		background-color: #ff8f40;
-		text-color: #bfbdb6;
-	}
+element.alternate.normal {
+    background-color: #00141d;
+    text-color: #bfbdb6;
+}
 
-	element.selected.normal {
-		background-color: #ff8f40;
-		text-color: #00141d;
-	}
- 
+element.alternate.active {
+    background-color: #ff8f40;
+    text-color: #bfbdb6;
+}
 
-	element.normal.active {
-		background-color: #00141d;
-		text-color: #bfbdb6;
-	}
- 
+element.selected.normal {
+    background-color: #ff8f40;
+    text-color: #00141d;
+}
 
-	element.normal.normal {
-		background-color: #00141d;
-		text-color: #bfbdb6;
-	}
- 
-	element.normal.urgent {
-		background-color: #f25d78;
-		text-color: #00141d;
-	}
+element.normal.active {
+    background-color: #00141d;
+    text-color: #bfbdb6;
+}
 
-    listview {
-	    columns: 2;
-	    lines: 9;
-		cycle: true;
-	    dynamic: true;
-	    layout: vertical;
-	    padding: 8 0;
-	    fixed-height: true;
-	    fixed-columns: true;
-	    fixed-lines: true;
-	    border: 0 10 6 10;
-	    cursor: "default";
-    }
+element.normal.normal {
+    background-color: #00141d;
+    text-color: #bfbdb6;
+}
 
-    // INPUT BAR 
-    //------------------------------------------------
+element.normal.urgent {
+    background-color: #f25d78;
+    text-color: #00141d;
+}
 
-    entry {
-	    text-color: #f27893;
-	    padding: 10 10 0 0;
-	    margin: 0 -2 0 0;
-	    background-color: inherit;
-		text-color: inherit;
-		cursor: text;
-		placeholder: "Search...";
-		placeholder-color: inherit;
-    }
+listview {
+    columns: 2;
+    lines: 9;
+    cycle: true;
+    dynamic: true;
+    layout: vertical;
+    padding: 8 0;
+    fixed-height: true;
+    fixed-columns: true;
+    fixed-lines: true;
+    border: 0 10 6 10;
+    cursor: "default";
+}
 
-    inputbar {
-	    children: [ prompt, entry, mode-switcher ];
-	    spacing:                     15px;
-	    padding: 10 0 0;
-	    margin: 0 0 0 0;
-    } 
+// INPUT BAR 
+//------------------------------------------------
 
-    prompt {
-	    text-color: #80bfff;
-	    padding: 10 6 0 10;
-	    margin: 0 -2 0 0;
-    }
+entry {
+    text-color: #b19cd9;
+    padding: 10 10 0 0;
+    margin: 0 -2 0 0;
+    background-color: inherit;
+    cursor: text;
+    placeholder: "Search...";
+    placeholder-color: #7a6b99;
+}
 
-    mode-switcher {
-	    orientation: horizontal;
-	    spacing: 10px;
-	    padding: 6px 10px 0 0;
-    }
+inputbar {
+    children: [ prompt, entry, mode-switcher ];
+    spacing: 15px;
+    padding: 10 0 0;
+    margin: 0 0 0 0;
+} 
 
-    button {
-	    padding: 6px;
-	    background-color: #2E3440;
-	    text-color: #bfbdb6;
-	    border-radius: 5px;
-	    cursor: pointer;
-	    horizontal-align: 0.5;
-	    width: 2.5em;
-    }
+prompt {
+    text-color: #80bfff;
+    padding: 10 6 0 10;
+    margin: 0 -2 0 0;
+}
 
-    button selected {
-	    background-color: #4fc3f7;
-	    text-color: #00141d;
-    }
+mode-switcher {
+    orientation: horizontal;
+    spacing: 10px;
+    padding: 6px 10px 0 0;
+}
+
+button {
+    padding: 6px;
+    background-color: #2E3440;
+    text-color: #bfbdb6;
+    border-radius: 5px;
+    cursor: pointer;
+    horizontal-align: 0.5;
+    width: 2.5em;
+}
+
+button selected {
+    background-color: #4fc3f7;
+    text-color: #00141d;
+}

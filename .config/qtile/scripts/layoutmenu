@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# Layout menu for Qtile using rofi
+# Allows selecting and switching to different layouts
+
+layouts=(
+    "MonadTall"
+    "BSP"
+    "Columns"
+    "Max"
+    "Floating"
+    "Zoomy"
+)
+
+# Show menu
+chosen=$(printf '%s\n' "${layouts[@]}" | rofi -dmenu -i -p "Select Layout" -theme ~/.config/rofi/themes/config.rasi)
+
+# Map chosen name to qtile layout name and switch
+case $chosen in
+    "MonadTall")
+        qtile cmd-obj -o group -f setlayout -a monadtall
+        ;;
+    "BSP")
+        qtile cmd-obj -o group -f setlayout -a bsp
+        ;;
+    "Columns")
+        qtile cmd-obj -o group -f setlayout -a columns
+        ;;
+    "Max")
+        qtile cmd-obj -o group -f setlayout -a max
+        ;;
+    "Floating")
+        qtile cmd-obj -o group -f setlayout -a floating
+        ;;
+    "Zoomy")
+        qtile cmd-obj -o group -f setlayout -a zoomy
+        ;;
+esac
+
+# Show notification with selected layout
+[ -n "$chosen" ] && notify-send "Layout" "$chosen" -t 1500 -u low

@@ -12,7 +12,7 @@ theme_path="$HOME/.config/rofi/themes/powermenu.rasi"
 
 # --- Logique ---
 # Récupérer le choix de l'utilisateur
-chosen=$(echo -e "$shutdown\n$reboot\n$suspend\n$lock\n$logout" | rofi -dmenu -i -theme "$theme_path")
+chosen=$(echo -e "$shutdown\n$reboot\n$suspend\n$lock\n$logout" | rofi -dmenu -p "Goodbye ${USER}" -mesg "Uptime: $(uptime -p | sed -e 's/up //g')" -i -theme "$theme_path")
 
 # Exécuter l'action correspondante
 case ${chosen} in

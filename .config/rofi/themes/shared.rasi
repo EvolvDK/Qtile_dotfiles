@@ -7,5 +7,5 @@
     active: #9ece6a;
     urgent: #f7768e;
 
-    #img-background: url("~/.config/bspwm/rices/emilia/rofi.webp", width);
+    //img-background: url("~/.config/bspwm/rices/emilia/rofi.webp", width);
 }
